@@ -3,15 +3,16 @@ import time
 import shutil
 import requests
 
-# Vex Manual Bridge - Self-Updating Command Listener
+# Vex Manual Bridge - Self-Updating Command Listener with Command Feed
 
-COMMAND_FILE = "vex_command.txt"
+COMMAND_FILE = "vex_command.txt"  # Legacy, still supported
 LOG_FILE = "vex_bridge_log.txt"
 UPDATE_FILE = "vex_update.py"
 VERSION_FILE = "vex_version.txt"
+COMMAND_FEED_FILE = "command_feed.txt"  # New feed file
 REPO_RAW_URL = "https://raw.githubusercontent.com/AzzanSol/vex-bridge/main/"
 
-CURRENT_VERSION = "1.1"  # This is the new version
+CURRENT_VERSION = "1.3"  # Next version
 
 # Load current version from file
 def load_version():
@@ -30,8 +31,8 @@ def log_action(action):
     with open(LOG_FILE, "a") as log:
         log.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {action}\n")
 
-# Read command file
-def read_command():
+# Read command file (legacy)
+def read_legacy_command():
     if not os.path.exists(COMMAND_FILE):
         return None
     with open(COMMAND_FILE, "r") as cmd_file:
@@ -39,6 +40,21 @@ def read_command():
     if command:
         return command
     return None
+
+# Read command from command feed (new)
+def read_feed_command():
+    try:
+        feed_url = REPO_RAW_URL + "command_feed.txt"
+        response = requests.get(feed_url)
+        if response.status_code != 200:
+            return None
+        command = response.text.strip()
+        if command:
+            return command
+        return None
+    except Exception as e:
+        print(f"Failed to read command feed: {e}")
+        return None
 
 # Execute commands
 def execute_command(command):
@@ -64,9 +80,13 @@ def execute_command(command):
     else:
         print(f"Unknown action: {action}")
 
-    # Clear command file after execution
-    with open(COMMAND_FILE, "w") as cmd_file:
-        cmd_file.write("")
+# Clear command feed (removes processed command from feed file in the repo)
+def clear_command_feed():
+    clear_url = REPO_RAW_URL + "command_feed.txt"
+    try:
+        requests.put(clear_url, data="")  # This would need personal token if repo is private
+    except Exception as e:
+        print(f"Failed to clear command feed: {e}")
 
 # Check for update from remote repo
 def check_for_update():
@@ -113,15 +133,16 @@ def apply_update(new_version):
 
 if __name__ == "__main__":
     print("Vex Manual Bridge is running...")
-    print("Listening for commands in 'vex_command.txt'...")
+    print("Listening for commands (legacy + feed)...")
     print("Checking for updates...")
     log_action("Bridge started and checking for updates.")
 
     check_for_update()
 
     while True:
-        command = read_command()
+        command = read_feed_command() or read_legacy_command()
         if command:
             print(f"Executing: {command}")
             execute_command(command)
+            clear_command_feed()  # Clear the feed after processing (optional - can be removed if you want history)
         time.sleep(2)
