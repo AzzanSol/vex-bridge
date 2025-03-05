@@ -11,7 +11,7 @@ COMMAND_FILE = "vex_command.txt"
 LOG_FILE = "vex_bridge_log.txt"
 UPDATE_FILE = "vex_update.py"
 VERSION_FILE = "vex_version.txt"
-REPO_RAW_URL = "https://raw.githubusercontent.com/your-username/vex-bridge/main/"  # Change this to your actual repo
+REPO_RAW_URL = "https://raw.githubusercontent.com/AzzanSol/vex-bridge/main/"  # Change this to your actual repo
 
 CURRENT_VERSION = "1.0"  # Starting version
 
