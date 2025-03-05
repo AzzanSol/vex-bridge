@@ -5,17 +5,15 @@ import requests
 
 # Vex Manual Bridge - Self-Updating Command Listener
 
-//hi
-
 COMMAND_FILE = "vex_command.txt"
 LOG_FILE = "vex_bridge_log.txt"
 UPDATE_FILE = "vex_update.py"
 VERSION_FILE = "vex_version.txt"
-REPO_RAW_URL = "https://raw.githubusercontent.com/AzzanSol/vex-bridge/main/"  # Change this to your actual repo
+REPO_RAW_URL = "https://raw.githubusercontent.com/AzzanSol/vex-bridge/main/"
 
-CURRENT_VERSION = "1.0"  # Starting version
+CURRENT_VERSION = "1.1"  # This is the new version
 
-# Load current version from file (if it exists)
+# Load current version from file
 def load_version():
     if os.path.exists(VERSION_FILE):
         with open(VERSION_FILE, "r") as vf:
@@ -76,7 +74,6 @@ def check_for_update():
         remote_version_url = REPO_RAW_URL + "vex_version.txt"
         remote_code_url = REPO_RAW_URL + "vex_bridge.py"
 
-        # Fetch remote version
         response = requests.get(remote_version_url)
         if response.status_code != 200:
             print("Failed to check remote version.")
@@ -86,7 +83,6 @@ def check_for_update():
         if remote_version != load_version():
             print(f"New version detected: {remote_version}")
 
-            # Fetch new code
             response = requests.get(remote_code_url)
             if response.status_code != 200:
                 print("Failed to download new version.")
@@ -98,7 +94,6 @@ def check_for_update():
             print("Update downloaded. Awaiting approval...")
             log_action(f"Update {remote_version} downloaded, awaiting approval.")
 
-            # Wait for user approval
             approval = input("Apply update now? (yes/no): ").strip().lower()
             if approval == "yes":
                 apply_update(remote_version)
@@ -120,6 +115,7 @@ if __name__ == "__main__":
     print("Vex Manual Bridge is running...")
     print("Listening for commands in 'vex_command.txt'...")
     print("Checking for updates...")
+    log_action("Bridge started and checking for updates.")
 
     check_for_update()
 
@@ -128,4 +124,4 @@ if __name__ == "__main__":
         if command:
             print(f"Executing: {command}")
             execute_command(command)
-        time.sleep(2)  # Check every 2 seconds
+        time.sleep(2)
