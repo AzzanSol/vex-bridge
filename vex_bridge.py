@@ -10,7 +10,7 @@ LOG_FILE = "vex_bridge_log.txt"
 UPDATE_FILE = "vex_update.py"
 VERSION_FILE = "vex_version.txt"
 COMMAND_FEED_FILE = "command_feed.txt"  # New feed file
-REPO_RAW_URL = "https://raw.githubusercontent.com/AzzanSol/vex-bridge/main/"
+REPO_RAW_URL = "https://raw.githubusercontent.com/AzzanSol/vex-bridge/staging/"
 
 CURRENT_VERSION = "1.3"  # Next version
 
