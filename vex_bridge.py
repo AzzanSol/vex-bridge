@@ -5,6 +5,8 @@ import requests
 
 # Vex Manual Bridge - Self-Updating Command Listener
 
+//hi
+
 COMMAND_FILE = "vex_command.txt"
 LOG_FILE = "vex_bridge_log.txt"
 UPDATE_FILE = "vex_update.py"
